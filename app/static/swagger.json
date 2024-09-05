@@ -1,0 +1,336 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Company API",
+        "description": "API para gerenciar empresas"
+    },
+    "host": "localhost:5000",
+    "basePath": "/companies",
+    "schemes": [
+        "http"
+    ],
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Insira o token JWT sem o prefixo 'Bearer'. O Swagger adicionará o prefixo automaticamente."
+        }
+    },
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Faz login e retorna um token JWT",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string",
+                                    "example": "admin"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "password"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token JWT gerado com sucesso",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "token": {
+                                    "type": "string",
+                                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                }
+            }
+        },
+        "/": {
+            "get": {
+                "tags": [
+                    "Company"
+                ],
+                "summary": "Lista todas as empresas",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Número inicial (offset) da lista"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "description": "Número máximo de resultados"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "Campo para ordenação (legal_name, trade_name, cnae)"
+                    },
+                    {
+                        "name": "dir",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "Direção da ordenação (asc ou desc)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de empresas retornada com sucesso",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Company"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Token ausente ou inválido"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Company"
+                ],
+                "summary": "Cria uma nova empresa",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CompanyInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Empresa criada com sucesso",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Company registered successfully!"
+                                },
+                                "company": {
+                                    "$ref": "#/definitions/Company"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro de validação"
+                    },
+                    "403": {
+                        "description": "Token ausente ou inválido"
+                    }
+                }
+            }
+        },
+        "/{cnpj}": {
+            "put": {
+                "tags": [
+                    "Company"
+                ],
+                "summary": "Atualiza uma empresa existente",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "cnpj",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "CNPJ da empresa a ser atualizada"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CompanyUpdateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa atualizada com sucesso",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Company updated successfully!"
+                                },
+                                "company": {
+                                    "$ref": "#/definitions/Company"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Erro de validação"
+                    },
+                    "404": {
+                        "description": "Empresa não encontrada"
+                    },
+                    "403": {
+                        "description": "Token ausente ou inválido"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Company"
+                ],
+                "summary": "Remove uma empresa",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "cnpj",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "CNPJ da empresa a ser removida"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Empresa removida com sucesso",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Company deleted successfully!"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Empresa não encontrada"
+                    },
+                    "403": {
+                        "description": "Token ausente ou inválido"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Company": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "cnpj": {
+                    "type": "string",
+                    "example": "12345678000199"
+                },
+                "legal_name": {
+                    "type": "string",
+                    "example": "Acme Corp"
+                },
+                "trade_name": {
+                    "type": "string",
+                    "example": "Acme"
+                },
+                "cnae": {
+                    "type": "string",
+                    "example": "62010"
+                }
+            }
+        },
+        "CompanyInput": {
+            "type": "object",
+            "required": [
+                "cnpj",
+                "legal_name",
+                "trade_name",
+                "cnae"
+            ],
+            "properties": {
+                "cnpj": {
+                    "type": "string",
+                    "example": "12345678000199"
+                },
+                "legal_name": {
+                    "type": "string",
+                    "example": "Acme Corp"
+                },
+                "trade_name": {
+                    "type": "string",
+                    "example": "Acme"
+                },
+                "cnae": {
+                    "type": "string",
+                    "example": "62010"
+                }
+            }
+        },
+        "CompanyUpdateInput": {
+            "type": "object",
+            "required": [
+                "trade_name",
+                "cnae"
+            ],
+            "properties": {
+                "trade_name": {
+                    "type": "string",
+                    "example": "Acme International"
+                },
+                "cnae": {
+                    "type": "string",
+                    "example": "62020"
+                }
+            }
+        }
+    }
+}

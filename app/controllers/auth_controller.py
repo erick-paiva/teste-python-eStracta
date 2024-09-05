@@ -29,16 +29,20 @@ class AuthController:
     @staticmethod
     def token_required(f):
         def wrapper(*args, **kwargs):
-            token = request.headers.get("x-access-token")
-            if not token:
-                return jsonify({"error": "Token is missing"}), 403
+            auth_header = request.headers.get("Authorization")
+            if not auth_header or not auth_header.startswith("Bearer "):
+                return jsonify({"error": "Token is missing or invalid"}), 403
+
+            token = auth_header.split(" ")[1]
 
             try:
                 data = jwt.decode(
                     token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
                 )
                 current_user = data["user"]
-            except Exception as e:
+            except jwt.ExpiredSignatureError:
+                return jsonify({"error": "Token has expired"}), 403
+            except jwt.InvalidTokenError:
                 return jsonify({"error": "Token is invalid"}), 403
 
             return f(current_user, *args, **kwargs)

@@ -1,3 +1,4 @@
+from validate_docbr import CNPJ
 from flask import jsonify
 from app.models.company import Company
 from app.configs.database import db
