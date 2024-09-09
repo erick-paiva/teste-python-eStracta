@@ -5,6 +5,9 @@ from app.middlewares.auth_middleware import add_bearer_token
 from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
+
 app.config.from_object(config.Config)
 
 routes.init_app(app)
@@ -16,5 +19,3 @@ migration.init_app(app)
 swagger.init_app(app)
 
 app.before_request(add_bearer_token)
-
-CORS(app)
