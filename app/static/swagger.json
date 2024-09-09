@@ -5,7 +5,7 @@
         "title": "Company API",
         "description": "API para gerenciar empresas"
     },
-    "host": "localhost:5000",
+    "host": "https://teste-python-e-stracta.vercel.app/",
     "basePath": "/companies",
     "schemes": [
         "http"
