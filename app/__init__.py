@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from app.configs import migration, database, swagger, config
 from app import routes
 from app.middlewares.auth_middleware import add_bearer_token
