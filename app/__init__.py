@@ -1,36 +1,21 @@
-from flask import Flask, request
-from flask_swagger_ui import get_swaggerui_blueprint
-from flask_migrate import Migrate
-from app.configs.config import Config
-from app.configs.database import init_db, db
-from app.routes.company_routes import company_bp
+from flask import Flask
+from app.configs import migration, database, swagger, config
+from app import routes
+from app.middlewares.auth_middleware import add_bearer_token
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config.Config)
 
-    # Inicializar o banco de dados
-    init_db(app)
+    migration.init_app(app)
 
-    # Registrar os blueprints
-    app.register_blueprint(company_bp, url_prefix="/companies")
+    database.init_app(app)
 
-    # Configuração do Swagger UI
-    SWAGGER_URL = "/swagger"
-    API_URL = "/static/swagger.json"  # Apontando para o arquivo JSON
-    swaggerui_blueprint = get_swaggerui_blueprint(
-        SWAGGER_URL, API_URL, config={"app_name": "Company API"}
-    )
+    routes.init_app(app)
 
-    # Registrar o blueprint do Swagger UI
-    app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+    swagger.init_app(app)
 
-    @app.before_request
-    def add_bearer_token():
-        auth_header = request.headers.get("Authorization")
-        if auth_header and not auth_header.lower().startswith("bearer "):
-            # Atualiza o cabeçalho da requisição com o prefixo 'Bearer'
-            request.environ["HTTP_AUTHORIZATION"] = "Bearer " + auth_header
+    app.before_request(add_bearer_token)
 
     return app

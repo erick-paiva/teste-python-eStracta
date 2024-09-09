@@ -11,7 +11,6 @@ class AuthController:
         username = auth.get("username")
         password = auth.get("password")
 
-        # Validar usuário e senha (no mundo real, seria feito via banco de dados)
         if username == "admin" and password == "password":
             token = jwt.encode(
                 {
@@ -36,18 +35,16 @@ class AuthController:
             token = auth_header.split(" ")[1]
 
             try:
-                data = jwt.decode(
+                jwt.decode(
                     token, current_app.config["SECRET_KEY"], algorithms=["HS256"]
                 )
-                current_user = data["user"]
+
             except jwt.ExpiredSignatureError:
                 return jsonify({"error": "Token has expired"}), 403
             except jwt.InvalidTokenError:
                 return jsonify({"error": "Token is invalid"}), 403
 
-            return f(current_user, *args, **kwargs)
+            return f(*args, **kwargs)
 
-        wrapper.__name__ = (
-            f.__name__
-        )  # Isso é necessário para evitar problemas ao empacotar a função
+        wrapper.__name__ = f.__name__
         return wrapper

@@ -15,7 +15,7 @@
             "type": "apiKey",
             "name": "Authorization",
             "in": "header",
-            "description": "Insira o token JWT sem o prefixo 'Bearer'. O Swagger adicionará o prefixo automaticamente."
+            "description": "Insira o token JWT. O prefixo 'Bearer' será adicionado automaticamente."
         }
     },
     "paths": {
@@ -69,7 +69,7 @@
                 "tags": [
                     "Company"
                 ],
-                "summary": "Lista todas as empresas",
+                "summary": "Lista todas as empresas com paginação e ordenação",
                 "security": [
                     {
                         "Bearer": []
@@ -88,7 +88,7 @@
                         "in": "query",
                         "required": false,
                         "type": "integer",
-                        "description": "Número máximo de resultados"
+                        "description": "Número máximo de resultados a serem retornados"
                     },
                     {
                         "name": "sort",
@@ -109,9 +109,24 @@
                     "200": {
                         "description": "Lista de empresas retornada com sucesso",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Company"
+                            "type": "object",
+                            "properties": {
+                                "total_items": {
+                                    "type": "integer",
+                                    "description": "Número total de empresas no banco de dados",
+                                    "example": 100
+                                },
+                                "listed_items": {
+                                    "type": "integer",
+                                    "description": "Número de empresas listadas na página atual",
+                                    "example": 10
+                                },
+                                "companies": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Company"
+                                    }
+                                }
                             }
                         }
                     },
@@ -136,7 +151,25 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/CompanyInput"
+                            "type": "object",
+                            "properties": {
+                                "cnpj": {
+                                    "type": "string",
+                                    "example": "12345678000199"
+                                },
+                                "legal_name": {
+                                    "type": "string",
+                                    "example": "Acme Corp"
+                                },
+                                "trade_name": {
+                                    "type": "string",
+                                    "example": "Acme"
+                                },
+                                "cnae": {
+                                    "type": "string",
+                                    "example": "62010"
+                                }
+                            }
                         }
                     }
                 ],
@@ -270,33 +303,6 @@
                     "type": "integer",
                     "example": 1
                 },
-                "cnpj": {
-                    "type": "string",
-                    "example": "12345678000199"
-                },
-                "legal_name": {
-                    "type": "string",
-                    "example": "Acme Corp"
-                },
-                "trade_name": {
-                    "type": "string",
-                    "example": "Acme"
-                },
-                "cnae": {
-                    "type": "string",
-                    "example": "62010"
-                }
-            }
-        },
-        "CompanyInput": {
-            "type": "object",
-            "required": [
-                "cnpj",
-                "legal_name",
-                "trade_name",
-                "cnae"
-            ],
-            "properties": {
                 "cnpj": {
                     "type": "string",
                     "example": "12345678000199"

@@ -7,14 +7,12 @@ from app.configs.database import db
 class CompanyController:
     @staticmethod
     def create_company(data):
-        # Validação do CNPJ
         cnpj_validator = CNPJ()
         cnpj = data.get("cnpj")
 
         if not cnpj or not cnpj_validator.validate(cnpj):
             return jsonify({"error": "Invalid CNPJ"}), 400
 
-        # Verificação dos campos obrigatórios
         required_fields = ["cnpj", "legal_name", "trade_name", "cnae"]
         missing_fields = [field for field in required_fields if not data.get(field)]
 
@@ -55,7 +53,6 @@ class CompanyController:
         if not company:
             return jsonify({"error": "Company not found"}), 404
 
-        # Os campos trade_name e cnae são obrigatórios para atualização
         if not data.get("trade_name") or not data.get("cnae"):
             return jsonify({"error": "Both trade_name and cnae are required"}), 400
 
@@ -86,13 +83,21 @@ class CompanyController:
         sort = params.get("sort", "legal_name")
         direction = params.get("dir", "asc")
 
-        companies_query = Company.query.order_by(
-            getattr(Company, sort).desc()
-            if direction == "desc"
-            else getattr(Company, sort)
-        )
-        companies_paginated = companies_query.offset(start).limit(limit).all()
+        total_items = Company.query.count()
 
-        companies_list = [company.to_dict() for company in companies_paginated]
+        if direction == "asc":
+            companies = Company.query.order_by(getattr(Company, sort).asc())
+        else:
+            companies = Company.query.order_by(getattr(Company, sort).desc())
 
-        return jsonify(companies_list)
+        companies = companies.offset(start).limit(limit).all()
+
+        listed_items = len(companies)
+
+        response = {
+            "total_items": total_items,
+            "listed_items": listed_items,
+            "companies": [company.to_dict() for company in companies],
+        }
+
+        return jsonify(response), 200
