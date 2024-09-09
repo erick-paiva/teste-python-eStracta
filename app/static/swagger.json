@@ -8,7 +8,7 @@
     "host": "teste-python-e-stracta.vercel.app",
     "basePath": "/companies",
     "schemes": [
-        "http"
+        "https"
     ],
     "securityDefinitions": {
         "Bearer": {
