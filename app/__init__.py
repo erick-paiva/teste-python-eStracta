@@ -9,9 +9,9 @@ app.config.from_object(config.Config)
 
 routes.init_app(app)
 
-migration.init_app(app)
-
 database.init_app(app)
+
+migration.init_app(app)
 
 swagger.init_app(app)
 

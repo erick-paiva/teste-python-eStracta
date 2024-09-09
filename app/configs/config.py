@@ -5,7 +5,7 @@ load_dotenv()
 
 
 class Config:
-    SECRET_KEY = "mysecretkey"
-    SQLALCHEMY_DATABASE_URI = "postgres://default:wq5fBl0cUekI@ep-young-snow-a4bfflwe-pooler.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require"
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = os.getenv("FLASK_ENV") == "development"
