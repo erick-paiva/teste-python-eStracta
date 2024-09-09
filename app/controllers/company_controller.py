@@ -78,20 +78,28 @@ class CompanyController:
 
     @staticmethod
     def list_companies(params):
+        company_name = params.get("name")
         start = int(params.get("start", 0))
         limit = int(params.get("limit", 10))
         sort = params.get("sort", "legal_name")
         direction = params.get("dir", "asc")
 
-        total_items = Company.query.count()
+        query = Company.query
+
+        if company_name:
+            query = query.filter(
+                (Company.legal_name.ilike(f"%{company_name}%"))
+                | (Company.trade_name.ilike(f"%{company_name}%"))
+            )
 
         if direction == "asc":
-            companies = Company.query.order_by(getattr(Company, sort).asc())
+            query = query.order_by(getattr(Company, sort).asc())
         else:
-            companies = Company.query.order_by(getattr(Company, sort).desc())
+            query = query.order_by(getattr(Company, sort).desc())
 
-        companies = companies.offset(start).limit(limit).all()
+        companies = query.offset(start).limit(limit).all()
 
+        total_items = query.count()
         listed_items = len(companies)
 
         response = {

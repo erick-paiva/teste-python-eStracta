@@ -69,7 +69,7 @@
                 "tags": [
                     "Company"
                 ],
-                "summary": "Lista todas as empresas com paginação e ordenação",
+                "summary": "Lista todas as empresas com paginação, ordenação e busca por nome",
                 "security": [
                     {
                         "Bearer": []
@@ -103,6 +103,13 @@
                         "required": false,
                         "type": "string",
                         "description": "Direção da ordenação (asc ou desc)"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "Busca empresas pelo nome (legal_name ou trade_name)"
                     }
                 ],
                 "responses": {
