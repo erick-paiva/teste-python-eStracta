@@ -19,7 +19,7 @@
         }
     },
     "paths": {
-        "/login": {
+        "/companies/login": {
             "post": {
                 "tags": [
                     "Auth"
@@ -205,7 +205,7 @@
                 }
             }
         },
-        "/{cnpj}": {
+        "/companies/{cnpj}": {
             "put": {
                 "tags": [
                     "Company"
