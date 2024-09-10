@@ -118,12 +118,20 @@ Este projeto implementa uma API para o gerenciamento de empresas, permitindo cri
 ## Rotas da API
 
 - `POST /companies/login`: Faz login e retorna um token JWT.
-- `GET /companies/`: Lista todas as empresas (rota protegida).
+- `GET /companies/`: Lista todas as empresas com paginação, ordenação e busca por nome.
 - `POST /companies/`: Cria uma nova empresa (rota protegida).
 - `PUT /companies/{cnpj}`: Atualiza uma empresa existente (rota protegida).
 - `DELETE /companies/{cnpj}`: Remove uma empresa (rota protegida).
 
 ## Exemplo de Requisição
+
+### Buscar empresas pelo nome:
+
+Faça uma requisição `GET` para `/companies/` com o nome da empresa como parâmetro de busca:
+
+```bash
+curl -X GET "http://localhost:5000/companies?name=Acme" -H "Authorization: <seu_token_jwt>"
+```
 
 ### Criar uma nova empresa:
 
