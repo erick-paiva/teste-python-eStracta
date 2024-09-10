@@ -6,7 +6,7 @@
         "description": "API para gerenciar empresas"
     },
     "host": "teste-python-e-stracta.vercel.app",
-    "basePath": "/companies",
+    "basePath": "/",
     "schemes": [
         "https"
     ],
@@ -64,7 +64,7 @@
                 }
             }
         },
-        "/": {
+        "/companies": {
             "get": {
                 "tags": [
                     "Company"
