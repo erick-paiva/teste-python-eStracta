@@ -99,7 +99,7 @@ Este projeto implementa uma API para o gerenciamento de empresas, permitindo cri
    Acesse a documentação interativa da API no navegador através de:
 
    ```
-   http://localhost:5000/swagger/
+   http://localhost:5000/documentation/
    ```
 
 8. **Autenticar na API**:
